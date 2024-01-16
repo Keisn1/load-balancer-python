@@ -1,0 +1,15 @@
+:PROPERTIES:
+:ID:       81d0e0b9-e6d3-4260-9c42-0d4e2a6b8a2f
+:END:
+#+title: Least connections algorithms
+#+date: [2024-01-16 Tue 11:38]
+#+startup: overview
+
+least number of open connections
+
+Pseudocode:
+servers = [server1, s2, s3]
+
+server.open_connections()
+
+utils:choose right server()

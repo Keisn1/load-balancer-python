@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "load_balancer"
+version = "0.1.0"
+description = "Building a Load Balancer"
+authors = ["Kay Freyer <kay.freyer@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^3.0.0"
+requests = "^2.31.0"
+pyyaml = "^6.0.1"
+responses = "^0.24.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

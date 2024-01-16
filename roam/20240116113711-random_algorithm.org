@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       9f618146-4e96-48a6-830e-9b7b07757086
+:END:
+#+title: Random algorithm
+#+date: [2024-01-16 Tue 11:37]
+#+startup: overview
+
+evenly distribute the traffic over the servers

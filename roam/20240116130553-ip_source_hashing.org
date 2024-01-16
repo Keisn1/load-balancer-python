@@ -1,0 +1,12 @@
+:PROPERTIES:
+:ID:       11d63cd8-4f00-42ab-a16f-63852123719c
+:END:
+#+title: ip source hashing
+#+date: [2024-01-16 Tue 13:05]
+#+startup: overview
+
+send client to the same backend server for consecutive requests
+- sticky session
+  - persistent connection
+
+- ip is hashed and kept in memory, lookup done against the hash table and the request sent to the same backend server

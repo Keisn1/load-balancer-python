@@ -29,18 +29,26 @@ def transform_backend_from_config(input: dict) -> dict[str, list[Server]]:
     return register
 
 
-def get_healthy_server(
-    backend: str, register: dict[str, list[Server]]
-) -> Optional[Server]:
+def get_healthy_server(backend: str, register: dict[str, list[Server]]) -> list[Server]:
     servers = register[backend]
     healthy_server = []
     for server in servers:
         if server.healthy:
             healthy_server.append(server)
-    if healthy_server:
-        return random.choice(healthy_server)
 
-    return None
+    return healthy_server
+
+
+def random_server(server: list[Server]) -> Optional[Server]:
+    if not server:
+        return None
+    return random.choice(server)
+
+
+def least_connections(server: list[Server]) -> Optional[Server]:
+    if not server:
+        return None
+    return min(server, key=lambda server: server.open_connections)
 
 
 def healthcheck(register: dict[str, list[Server]]) -> dict[str, list[Server]]:
@@ -71,13 +79,14 @@ def process_rewrite_rules(config: dict, host: str, path: str) -> str:
     return path
 
 
-# def process_header_params(config: dict, host: str, params: dict) -> dict:
-#     for entry in config.get("hosts", []):
-#         if host == entry["host"]:
-#             header_rules = entry.get("header_rules", {})
-#             for key_to_del in header_rules.get("remove", {}):
-#                 del params[key_to_del]
+def process_firewall_rules_reject(config, host, ip=None, path=None):
+    for entry in config.get("hosts", []):
+        if host == entry["host"]:
+            ips_to_reject = entry.get("firewall_rules", {}).get("ip_reject", [])
+            if ip in ips_to_reject:
+                return True
 
-#             params.update(header_rules.get("add", {}))
-
-#     return params
+            paths_to_reject = entry.get("firewall_rules", {}).get("path_reject", [])
+            if path in paths_to_reject:
+                return True
+    return False

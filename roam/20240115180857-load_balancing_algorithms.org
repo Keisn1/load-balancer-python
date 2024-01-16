@@ -5,3 +5,9 @@
 #+date: [2024-01-15 Mon 18:08]
 #+startup: overview
 
+[[id:9f618146-4e96-48a6-830e-9b7b07757086][Random algorithm]]
+[[id:81d0e0b9-e6d3-4260-9c42-0d4e2a6b8a2f][Least connections algorithms]]
+[[id:6fdfca8e-b235-4243-bcd4-4b87f3214237][random weighted algorithm]]
+[[id:b89eda59-0644-4676-89be-177f029312dd][round robin algorithm]]
+[[id:11d63cd8-4f00-42ab-a16f-63852123719c][ip source hashing]]
+[[id:2e8fde94-8906-4710-bc6c-2df175b93c72][Gobal server load balancing (GSLB)]]

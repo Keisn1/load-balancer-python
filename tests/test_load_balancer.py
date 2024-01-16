@@ -1,4 +1,4 @@
-from flask import json
+from flask import Request, json
 import pytest
 
 import sys
@@ -101,8 +101,55 @@ def test_routing_notfound(test_client, path, headers):
     ],
 )
 def test_no_server_available(test_client, path, headers):
-    response = test_client.get("/", headers={"Host": "www.orange.com"})
+    response = test_client.get(path, headers=headers)
     assert b"No backend servers available." in response.data
 
-    response = test_client.get("/orange")
+    response = test_client.get(path, headers=headers)
     assert b"No backend servers available." in response.data
+
+
+def test_block_ip_address(test_client):
+    response = test_client.get(
+        "/",
+        headers={"Host": "www.mango.com"},
+        environ_base={"REMOTE_ADDR": "10.192.0.1"},
+    )
+    # assert b"Forbidden Ip" in response
+    assert response.status_code == 403
+
+    response = test_client.get(
+        "/",
+        headers={"Host": "www.mango.com"},
+        environ_base={"REMOTE_ADDR": "10.192.0.2"},
+    )
+    # assert b"Forbidden Ip" in response.data
+    assert response.status_code == 403
+
+    response = test_client.get(
+        "/",
+        headers={"Host": "www.mango.com"},
+        environ_base={"REMOTE_ADDR": "55.55.55.55"},
+    )
+    assert response.status_code == 200
+
+
+def test_block_path(test_client):
+    response = test_client.get(
+        "/messages",
+        headers={"Host": "www.mango.com"},
+    )
+    # assert b"Forbidden Ip" in response
+    assert response.status_code == 403
+
+    response = test_client.get(
+        "/apps",
+        headers={"Host": "www.mango.com"},
+    )
+    # assert b"Forbidden Ip" in response.data
+    assert response.status_code == 403
+
+    response = test_client.get(
+        "/mango",
+        headers={"Host": "www.mango.com"},
+    )
+    assert response.status_code == 200

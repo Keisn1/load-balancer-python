@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       2e8fde94-8906-4710-bc6c-2df175b93c72
+:END:
+#+title: Gobal server load balancing (GSLB)
+#+date: [2024-01-16 Tue 13:08]
+#+startup: overview
+
+distributing web traffic against different geographic backend servers
+routing client request to the server closest to the client

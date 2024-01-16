@@ -1,0 +1,13 @@
+:PROPERTIES:
+:ID:       90a8d14a-e491-4fe2-b9ba-b2e4c8245689
+:END:
+#+title: Firewall
+#+date: [2024-01-16 Tue 13:10]
+#+startup: overview
+
+Goal:
+- block malicious traffic based on HTTP request
+- allow non-malicious traffic continue to have access
+- apply blocking rules intelligently
+
+* blocking ip-addresses

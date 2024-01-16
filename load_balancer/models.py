@@ -4,6 +4,7 @@ import requests
 class Server:
     def __init__(self, endpoint, path="/healthcheck"):
         self._endpoint = endpoint
+        self._open_connections = 0
         self._healthy = True
         self.path = path
         self.scheme = "http://"
@@ -12,6 +13,22 @@ class Server:
     @property
     def endpoint(self):
         return self._endpoint
+
+    @property
+    def open_connections(self):
+        return self._open_connections
+
+    @open_connections.setter
+    def open_connections(self, value):
+        if value < 0:
+            raise ValueError("Trying to set open connections < 0")
+        self._open_connections = value
+
+    def inc_open_connections(self):
+        self._open_connections += 1
+
+    def dec_open_connections(self):
+        self._open_connections -= 1
 
     @property
     def healthy(self):
@@ -27,7 +44,6 @@ class Server:
                 self.scheme + self._endpoint + self.path, timeout=self.timeout
             )
 
-            print(resp)
             if resp.status_code == 200:
                 self._healthy = True
             else:
@@ -36,8 +52,7 @@ class Server:
         except (
             requests.exceptions.ConnectionError,
             requests.exceptions.Timeout,
-        ) as err:
-            print(err)
+        ):
             self._healthy = False
 
     def __eq__(self, other):

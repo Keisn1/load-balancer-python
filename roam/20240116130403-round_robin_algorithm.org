@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       b89eda59-0644-4676-89be-177f029312dd
+:END:
+#+title: round robin algorithm
+#+date: [2024-01-16 Tue 13:04]
+#+startup: overview
+
+- evenly spread traffic
+- no randomness, since requests are are distributed in order

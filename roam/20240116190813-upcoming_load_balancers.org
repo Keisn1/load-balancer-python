@@ -1,0 +1,11 @@
+:PROPERTIES:
+:ID:       4306c856-0343-4527-8cb1-dd81a29573fc
+:END:
+#+title: upcoming load balancers
+#+date: [2024-01-16 Tue 19:08]
+#+startup: overview
+
+https://github.com/traefik/traefik Go
+https://github.com/envoyproxy/envoy C++
+https://caddyserver.com/
+https://github.com/caddyserver/caddy

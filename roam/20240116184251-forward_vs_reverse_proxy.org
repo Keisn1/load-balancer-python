@@ -1,0 +1,18 @@
+:PROPERTIES:
+:ID:       ec9c637d-f160-4a2b-89c0-3df1de446387
+:END:
+#+title: forward vs reverse proxy
+#+date: [2024-01-16 Tue 18:42]
+#+startup: overview
+
+|             | [[id:123c8ceb-d281-4b0c-a6fb-d5b9b44676e6][forward-proxy]]                          | [[id:7da1585c-9ed5-4efd-89ba-093dfc1ca6e9][revers-proxy]]                               |
+|-------------+----------------------------------------+--------------------------------------------|
+| Direction   | between client and internet            | between client and backend-servers         |
+| of proxying |                                        |                                            |
+|             |                                        |                                            |
+| Function    | on behalf of clients, forwarding their | on bhalf of the server; forwarding request |
+|             | request to the internet                | to appropriate backend server              |
+|             |                                        |                                            |
+| Use Case    | content filtering, access control,     | improve performance, security, scalability |
+|             | anonymizing client requests            | load balancing, ssl termination, caching   |
+|             |                                        |                                            |

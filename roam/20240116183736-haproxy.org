@@ -1,0 +1,48 @@
+:PROPERTIES:
+:ID:       ff194113-7b08-4eb6-b3f8-86c593ef7d8d
+:END:
+#+title: HAProxy
+#+date: [2024-01-16 Tue 18:37]
+#+startup: overview
+
+- reliable and high performance
+- written in C
+- frontend
+  - which ports the HAProxy process binds to and supports access control lists
+    (ACLs)
+- backend
+  - define algorithms and diverse health checks
+  - manipulating HTTP request
+
+#+begin_src conf
+frontend www
+    bind :80
+    acl bad_ip src 10.192.0.1
+    tcp-request connection reject if bad_ip
+
+    acl host_mango hdr(host) -i ilovemango.com
+    acl host_milkshakes hdr(host) -i milkshakes.com
+
+    monitor-uri /healthcheck
+
+    reqrep ^([^\ :])\ /foo/(.)     \1\ /bar/\2
+
+    use_backend mango_cluster if host_mango
+    use_backend milkshake_cluster if host_milkshakes
+
+backend mango_cluster
+    balance leastconn
+    option httpclose
+    option forwardfor
+    server node1 10.0.0.1:8080 check
+    server node2 10.0.0.2:8080 check
+    server node3 10.0.0.3:8080 check
+
+backend milkshake_cluster
+    balance leastconn
+    option httpclose
+    option forwardfor
+    server node1 10.0.0.4:8080 check
+    server node2 10.0.0.5:8080 check
+    server node3 10.0.0.6:8080 check
+#+end_src

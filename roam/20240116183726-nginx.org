@@ -1,0 +1,92 @@
+:PROPERTIES:
+:ID:       da4a1370-c186-42a2-ba19-bcb633dbff9a
+:END:
+#+title: Nginx
+#+date: [2024-01-16 Tue 18:37]
+#+startup: overview
+
+- load-balancer
+- [[id:7da1585c-9ed5-4efd-89ba-093dfc1ca6e9][reverse-proxy]]
+
+#+begin_src conf
+# nginx configuration
+server {
+  server_name sub1.example.com;
+  location / {
+    proxy_pass http://127.0.0.1:xxxx;
+  }
+}
+server {
+  server_name sub2.example.com;
+  location / {
+    proxy_pass http://127.0.0.1:xxxx;
+  }
+}
+
+# upstreams
+http {
+  upstream backend {
+    zone backend 64k;
+    server backend1.example.com;
+    server backend2.example.com;
+    server backend3.example.com;
+    server backend4.example.com;
+  }
+}
+
+# health checks
+location / {
+    proxy_pass http://backend;
+    health_check uri=/some/path;
+}
+
+# adding and Removing headers
+add_header MyHeader Value;
+proxy_hide_header MyHeader;
+
+# modifying http query strings
+location = /oneapi {
+  set $args $args&apiKey=newparam;
+  proxy_pass https://localhost:8080;
+}
+
+# rewriting urls
+server {
+  # ...
+  rewrite ^(/download/.)/media/(\w+)\.?.$ $1/mp3/$2.mp3 last;
+  rewrite ^(/download/.)/audio/(\w+)\.?.$ $1/mp3/$2.ra  last;
+  return  403;
+  # ...
+}
+
+# ip hash load balancing
+upstream backend {
+  ip_hash;
+  server backend1.example.com;
+  server backend2.example.com;
+}
+
+# weighted load balancing
+upstream backend {
+  server backend1.example.com weight=5;
+  server backend2.example.com;
+  server 192.0.0.1 backup;
+}
+
+# denying ips
+location / {
+  deny    10.192.0.1;
+  allow   10.192.0.2;
+  # drop everyone else
+  deny    all;
+}
+
+# denying requests based on headers
+location /api {
+  proxy_http_version 1.1;
+  if ($http_myheader != "WhatIWant") {
+    return 401;
+  }
+  proxy_pass http://app:3000/;
+}
+#+end_src

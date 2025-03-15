@@ -1,0 +1,169 @@
+:PROPERTIES:
+:ID:       a911bf62-3166-4df7-bfa4-f00d816767e2
+:END:
+#+title: load balancing in the container exosystem
+#+date: [2024-01-16 Tue 18:53]
+#+startup: overview
+
+- load balancers in the context of container orchestration tools (e.g. Kubernetes)
+
+* Parts
+** main load balancer
+** load-balancing at the individual service-level
+* Kubernetes
+** service
+- acts like a "Layer 4" (TCP) load balancers where it points to a set of pods
+- the following does
+  - spin up Nginx Pods for each deployment that listens on port 80
+    o
+  - healthchecks are done at the Pod level
+  - pods will be marked as down if they don't meet requirements declared
+#+begin_src conf
+# deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mango
+  labels:
+    app: mango
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mango
+  template:
+    metadata:
+      labels:
+        app: mango
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+        # health check
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+            httpHeaders:
+            - name: Host
+              value: www.mango.com
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apple
+  labels:
+    app: apple
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: apple
+  template:
+    metadata:
+      labels:
+        app: apple
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+        # health check
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+            httpHeaders:
+            - name: Host
+              value: www.apple.com
+          initialDelaySeconds: 5
+          periodSeconds: 5
+#+end_src
+- service is accessible from only within the kubernetes cluster
+- ~selector~ determines which set of Pods the Service points to
+
+#+begin_src conf
+# service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mango-service
+spec:
+  selector:
+    app: mango
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apple-service
+spec:
+  selector:
+    app: apple
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myservice
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9375
+#+end_src
+** ingress
+
+- API object that provides HTTP and HTTPs routing to services based on rules
+- entry point to your cluster
+- allows to define how external Http/s ttraffic should be processed and directed to different services
+- the following creates a "Layer 7" (application layer) with Nginx Ingress
+- no native capabilities of exposing ingresses, supports for example
+  https://github.com/kubernetes/ingress-nginx
+  https://github.com/haproxytech/kubernetes-ingress
+#+begin_src conf
+# ingress.yaml
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  annotatons:
+    # Add Custom headers, remove headers, set rewrite rules, load balancing algorithm, firewall
+    nginx.ingress.kubernetes.io/load-balance: round_robin
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/24"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "SampleHeader: Test"
+      proxy_hide_header MyHeader;
+
+spec:
+  rules:
+  - host: www.mango.com # host based
+    http:
+      paths:
+      - path: /test/?(.*) # path based routing with rewrite
+        backend:
+          serviceName: mango
+          servicePort: 80
+  - host: www.apple.com
+    http:
+      paths:
+      - path: /anotherpath  # path based routing
+        backend:
+          serviceName: apple
+          servicePort: 80
+#+end_src

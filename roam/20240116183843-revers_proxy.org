@@ -1,0 +1,21 @@
+:PROPERTIES:
+:ID:       7da1585c-9ed5-4efd-89ba-093dfc1ca6e9
+:END:
+#+title: revers-proxy
+#+date: [2024-01-16 Tue 18:38]
+#+startup: overview
+
+between client devices and a web-server
+- performs functions on behalf of web server
+* Functions
+** Load balancing
+** SSL Termination
+- handle ssl/tls encryption and decryption
+** Caching
+- cache static content
+** Security
+** Compression
+** Web acceleration
+* why reverse
+[[id:123c8ceb-d281-4b0c-a6fb-d5b9b44676e6][forward-proxy]]
+- describes direction

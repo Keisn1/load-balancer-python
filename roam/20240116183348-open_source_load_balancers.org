@@ -1,0 +1,18 @@
+:PROPERTIES:
+:ID:       efe01d31-b34c-4d44-9cce-08d70a4be31a
+:END:
+#+title: open source load balancers
+#+date: [2024-01-16 Tue 18:33]
+#+startup: overview
+* 90s
+- need for load balancers
+- often times they did it on their own
+** Open source - [[id:5ed9d2e7-5985-4ff5-886f-c578781d7f84][Apache http server]]
+    - LAMP-stack:
+      - linux, [[id:5ed9d2e7-5985-4ff5-886f-c578781d7f84][Apache http server]], MySQL, PHP
+      -
+* After dot-com bubble (2000)
+- new application stacks (Python, Ruby, Java)
+  - Django, Rails
+- [[id:da4a1370-c186-42a2-ba19-bcb633dbff9a][Nginx]] , [[id:ff194113-7b08-4eb6-b3f8-86c593ef7d8d][HAProxy]]
+* [[id:a911bf62-3166-4df7-bfa4-f00d816767e2][load balancing in the container exosystem]]

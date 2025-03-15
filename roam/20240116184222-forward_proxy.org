@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       123c8ceb-d281-4b0c-a6fb-d5b9b44676e6
+:END:
+#+title: forward-proxy
+#+date: [2024-01-16 Tue 18:42]
+#+startup: overview
+
+* why forward
+[[id:ec9c637d-f160-4a2b-89c0-3df1de446387][forward vs reverse proxy]]
